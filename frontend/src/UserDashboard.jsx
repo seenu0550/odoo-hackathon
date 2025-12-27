@@ -7,21 +7,27 @@ function UserDashboard() {
   const [activeTab, setActiveTab] = useState('requests');
   const [showUserModal, setShowUserModal] = useState(false);
   const [currentUser, setCurrentUser] = useState({ name: 'User', email: 'user@company.com', role: 'employee' });
-  const [requests, setRequests] = useState([
-    { id: 1, equipment: 'Printer HP-001', type: 'Corrective', status: 'New', date: '2025-01-15' },
-    { id: 2, equipment: 'AC Unit-205', type: 'Corrective', status: 'In Progress', date: '2025-01-14' },
-    { id: 3, equipment: 'Laptop DEL-123', type: 'Corrective', status: 'Repaired', date: '2025-01-13' }
-  ]);
+  const [requests, setRequests] = useState([]);
   
-  const [equipment] = useState([
-    { id: 1, name: 'Printer HP-001', category: 'Office Equipment', team: 'IT Support' },
-    { id: 2, name: 'AC Unit-205', category: 'HVAC', team: 'Facilities' },
-    { id: 3, name: 'Laptop DEL-123', category: 'IT Equipment', team: 'IT Support' }
-  ]);
+  const [equipment, setEquipment] = useState([]);
 
   useEffect(() => {
     loadCurrentUser();
+    loadData();
   }, []);
+
+  const loadData = async () => {
+    try {
+      const [equipmentData, requestsData] = await Promise.all([
+        api.getEquipment().catch(() => []),
+        api.getRequests().catch(() => [])
+      ]);
+      setEquipment(equipmentData || []);
+      setRequests(requestsData || []);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    }
+  };
 
   const loadCurrentUser = () => {
     const userData = localStorage.getItem('currentUser');

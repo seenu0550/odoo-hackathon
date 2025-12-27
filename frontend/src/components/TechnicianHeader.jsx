@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [currentUser, setCurrentUser] = useState({ name: 'Technician', email: 'tech@company.com', role: 'technician' });
   const navigate = useNavigate();
   
-  const technicianData = {
-    name: 'John Smith',
-    id: 'TECH-001',
-    department: 'Maintenance',
-    shift: 'Day Shift (8AM-4PM)',
-    email: 'john.smith@company.com'
+  useEffect(() => {
+    loadCurrentUser();
+  }, []);
+
+  const loadCurrentUser = () => {
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      setCurrentUser(JSON.parse(userData));
+    }
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('currentUser');
     navigate('/');
   };
 
@@ -45,9 +50,9 @@ const Header = () => {
                 cursor: 'pointer',
                 fontSize: '16px'
               }}
-              title={`${technicianData.name} - ${technicianData.department}`}
+              title={`${currentUser.name} - ${currentUser.department || 'Technician'}`}
             >
-              {technicianData.name.split(' ').map(n => n[0]).join('')}
+              {currentUser.name.split(' ').map(n => n[0]).join('')}
             </div>
             
             {showDropdown && (
@@ -63,11 +68,11 @@ const Header = () => {
                 zIndex: 10
               }}>
                 <div style={{ padding: '16px', borderBottom: '1px solid #e5e7eb' }}>
-                  <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '4px' }}>{technicianData.name}</div>
-                  <div style={{ fontSize: '12px', color: '#6b7280' }}>ID: {technicianData.id}</div>
-                  <div style={{ fontSize: '12px', color: '#6b7280' }}>{technicianData.department}</div>
-                  <div style={{ fontSize: '12px', color: '#6b7280' }}>{technicianData.shift}</div>
-                  <div style={{ fontSize: '12px', color: '#6b7280' }}>{technicianData.email}</div>
+                  <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '4px' }}>{currentUser.name}</div>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>ID: {currentUser._id || 'N/A'}</div>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>{currentUser.department || 'Not specified'}</div>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>Role: {currentUser.role}</div>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>{currentUser.email}</div>
                 </div>
                 
                 <div style={{ padding: '8px 0' }}>
