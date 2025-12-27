@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Register({ onRegister, onSwitchToLogin }) {
+function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,7 +17,27 @@ function Register({ onRegister, onSwitchToLogin }) {
       alert('Passwords do not match');
       return;
     }
-    onRegister(formData);
+    
+    // Save user to localStorage
+    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    
+    // Check if user already exists
+    if (users.find(u => u.email === formData.email)) {
+      alert('User with this email already exists');
+      return;
+    }
+    
+    // Add new user
+    users.push({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      role: formData.role
+    });
+    
+    localStorage.setItem('registeredUsers', JSON.stringify(users));
+    alert('Registration successful! Please login.');
+    navigate('/');
   };
 
   const handleChange = (e) => {
@@ -249,7 +271,7 @@ function Register({ onRegister, onSwitchToLogin }) {
         
         <div style={styles.footer}>
           <button 
-            onClick={onSwitchToLogin}
+            onClick={() => navigate('/')}
             style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline' }}
           >
             Already have an account? Login here

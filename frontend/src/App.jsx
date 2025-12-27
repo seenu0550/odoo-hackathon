@@ -1,43 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
+import Dashboard from './pages/Dashboard.jsx';
 import UserDashboard from './UserDashboard.jsx';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [registeredUsers, setRegisteredUsers] = useState([]);
-  const [showRegister, setShowRegister] = useState(false);
-
-  const handleRegister = (userData) => {
-    setRegisteredUsers([...registeredUsers, userData]);
-    setUser(userData);
-  };
-
-  const handleLogin = (loginData) => {
-    const registeredUser = registeredUsers.find(u => u.email === loginData.email && u.password === loginData.password);
-    if (registeredUser) {
-      setUser(registeredUser);
-    } else {
-      alert('Invalid email or password');
-    }
-  };
-
-  if (!user) {
-    return showRegister ? 
-      <Register onRegister={handleRegister} onSwitchToLogin={() => setShowRegister(false)} /> :
-      <Login onLogin={handleLogin} onSwitchToRegister={() => setShowRegister(true)} />;
-  }
-
-  switch (user.role) {
-    case 'user':
-      return <UserDashboard user={user} />;
-    case 'technician':
-      return <div>Technician Dashboard (Coming Soon)</div>;
-    case 'manager':
-      return <div>Manager Dashboard (Coming Soon)</div>;
-    default:
-      return <Login onLogin={handleLogin} onSwitchToRegister={() => setShowRegister(true)} />;
-  }
+  return (
+    <Router>
+      <div>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/user-dashboard" element={<UserDashboard />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
 export default App;

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Login({ onLogin, onSwitchToRegister }) {
+function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -8,7 +10,23 @@ function Login({ onLogin, onSwitchToRegister }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(formData);
+    
+    if (formData.email && formData.password) {
+      // Check if user exists in localStorage
+      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+      const user = users.find(u => u.email === formData.email && u.password === formData.password);
+      
+      if (user) {
+        // Route based on registered role
+        if (user.role === 'technician') {
+          navigate('/dashboard');
+        } else {
+          navigate('/user-dashboard');
+        }
+      } else {
+        alert('Invalid email or password');
+      }
+    }
   };
 
   const handleChange = (e) => {
@@ -192,7 +210,7 @@ function Login({ onLogin, onSwitchToRegister }) {
         
         <div style={styles.footer}>
           <button 
-            onClick={onSwitchToRegister}
+            onClick={() => navigate('/register')}
             style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline' }}
           >
             Don't have an account? Register here

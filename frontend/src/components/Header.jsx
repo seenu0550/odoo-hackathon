@@ -1,6 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Header({ user, onUserClick }) {
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    navigate('/');
+  };
+  
   const styles = {
     header: {
       background: 'rgba(255, 255, 255, 0.95)',
@@ -18,6 +25,17 @@ function Header({ user, onUserClick }) {
       fontWeight: '700',
       color: '#2d3748',
       margin: '0'
+    },
+    button: {
+      padding: '8px 16px',
+      backgroundColor: '#2563eb',
+      color: 'white',
+      border: 'none',
+      borderRadius: '6px',
+      fontSize: '14px',
+      fontWeight: '500',
+      cursor: 'pointer',
+      marginLeft: '12px'
     }
   };
 
@@ -26,7 +44,7 @@ function Header({ user, onUserClick }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
         <h1 style={styles.title}>GearGuard Dashboard</h1>
       </div>
-      <div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         <span 
           style={{ 
             fontSize: '16px', 
@@ -43,6 +61,12 @@ function Header({ user, onUserClick }) {
         >
           {user?.name || user?.email?.split('@')[0] || 'User'}
         </span>
+        <button 
+          onClick={handleLogout}
+          style={styles.button}
+        >
+          Logout
+        </button>
       </div>
     </div>
   );

@@ -1,0 +1,72 @@
+export const mockRequests = [
+  {
+    id: 1,
+    equipment: "Conveyor Belt A1",
+    subject: "Belt alignment issue",
+    description: "Belt is misaligned causing product spillage",
+    priority: "CRITICAL",
+    status: "NEW",
+    location: "Production Line 1",
+    dueDate: "2024-01-15",
+    assignedTo: null,
+    createdAt: "2024-01-10",
+    duration: 0,
+    notes: ""
+  },
+  {
+    id: 2,
+    equipment: "Hydraulic Press B2",
+    subject: "Pressure leak detected",
+    description: "Hydraulic fluid leaking from main cylinder",
+    priority: "HIGH",
+    status: "IN_PROGRESS",
+    location: "Assembly Area",
+    dueDate: "2024-01-20",
+    assignedTo: "John Doe",
+    createdAt: "2024-01-12",
+    duration: 2.5,
+    notes: "Replaced main seal"
+  },
+  {
+    id: 3,
+    equipment: "Motor C3",
+    subject: "Overheating issue",
+    description: "Motor temperature exceeding normal range",
+    priority: "MEDIUM",
+    status: "REPAIRED",
+    location: "Warehouse",
+    dueDate: "2024-01-18",
+    assignedTo: "Jane Smith",
+    createdAt: "2024-01-08",
+    duration: 4,
+    notes: "Cleaned cooling system and replaced fan"
+  },
+  {
+    id: 4,
+    equipment: "Sensor D4",
+    subject: "Calibration required",
+    description: "Temperature sensor giving incorrect readings",
+    priority: "LOW",
+    status: "NEW",
+    location: "Quality Control",
+    dueDate: "2024-01-25",
+    assignedTo: null,
+    createdAt: "2024-01-14",
+    duration: 0,
+    notes: ""
+  },
+  {
+    id: 5,
+    equipment: "Pump E5",
+    subject: "Complete failure",
+    description: "Pump motor burned out, beyond repair",
+    priority: "HIGH",
+    status: "SCRAP",
+    location: "Utility Room",
+    dueDate: "2024-01-12",
+    assignedTo: "Mike Johnson",
+    createdAt: "2024-01-05",
+    duration: 1,
+    notes: "Motor completely damaged, replacement needed"
+  }
+];
