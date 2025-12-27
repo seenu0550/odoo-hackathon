@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from './utils/api';
 
 function Register() {
   const navigate = useNavigate();
@@ -10,34 +11,39 @@ function Register() {
     confirmPassword: '',
     role: 'user'
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+    
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
+      setError('Passwords do not match');
+      setLoading(false);
       return;
     }
     
-    // Save user to localStorage
-    const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    
-    // Check if user already exists
-    if (users.find(u => u.email === formData.email)) {
-      alert('User with this email already exists');
-      return;
+    try {
+      const response = await api.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      });
+      
+      if (response.success) {
+        alert('Registration successful! Please login.');
+        navigate('/');
+      } else {
+        setError(response.error || 'Registration failed');
+      }
+    } catch (error) {
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
     }
-    
-    // Add new user
-    users.push({
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      role: formData.role
-    });
-    
-    localStorage.setItem('registeredUsers', JSON.stringify(users));
-    alert('Registration successful! Please login.');
-    navigate('/');
   };
 
   const handleChange = (e) => {
@@ -258,15 +264,33 @@ function Register() {
           
           <button
             type="submit"
-            style={styles.button}
-            onMouseOver={(e) => Object.assign(e.target.style, styles.buttonHover)}
+            disabled={loading}
+            style={{
+              ...styles.button,
+              opacity: loading ? 0.7 : 1,
+              cursor: loading ? 'not-allowed' : 'pointer'
+            }}
+            onMouseOver={(e) => !loading && Object.assign(e.target.style, styles.buttonHover)}
             onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+              if (!loading) {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+              }
             }}
           >
-            Create Account
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
+          
+          {error && (
+            <div style={{
+              color: '#e53e3e',
+              fontSize: '14px',
+              textAlign: 'center',
+              marginTop: '10px'
+            }}>
+              {error}
+            </div>
+          )}
         </form>
         
         <div style={styles.footer}>

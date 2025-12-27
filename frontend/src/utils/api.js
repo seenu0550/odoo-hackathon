@@ -1,23 +1,118 @@
-import { mockRequests } from './mockData.js';
+const API_BASE_URL = 'http://localhost:3001/api';
 
-let requests = [...mockRequests];
+const handleApiCall = async (url, options = {}) => {
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }
+};
 
 export const api = {
-  getRequests: () => Promise.resolve([...requests]),
+  // Equipment APIs
+  getEquipment: async () => {
+    return handleApiCall(`${API_BASE_URL}/equipment`);
+  },
   
-  updateRequest: (id, updates) => {
-    const index = requests.findIndex(r => r.id === id);
-    if (index !== -1) {
-      requests[index] = { ...requests[index], ...updates };
-      return Promise.resolve(requests[index]);
-    }
-    return Promise.reject(new Error('Request not found'));
+  createEquipment: async (equipment) => {
+    return handleApiCall(`${API_BASE_URL}/equipment`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(equipment)
+    });
+  },
+  
+  updateEquipment: async (id, equipment) => {
+    return handleApiCall(`${API_BASE_URL}/equipment/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(equipment)
+    });
+  },
+  
+  deleteEquipment: async (id) => {
+    return handleApiCall(`${API_BASE_URL}/equipment/${id}`, {
+      method: 'DELETE'
+    });
   },
 
-  pickupRequest: (id, technician) => {
-    return api.updateRequest(id, { 
-      assignedTo: technician, 
-      status: 'IN_PROGRESS' 
+  // Request APIs
+  getRequests: async () => {
+    return handleApiCall(`${API_BASE_URL}/requests`);
+  },
+  
+  createRequest: async (request) => {
+    return handleApiCall(`${API_BASE_URL}/requests`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request)
     });
+  },
+  
+  updateRequest: async (id, request) => {
+    return handleApiCall(`${API_BASE_URL}/requests/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request)
+    });
+  },
+  
+  deleteRequest: async (id) => {
+    return handleApiCall(`${API_BASE_URL}/requests/${id}`, {
+      method: 'DELETE'
+    });
+  },
+
+  // Team APIs
+  getTeams: async () => {
+    return handleApiCall(`${API_BASE_URL}/teams`);
+  },
+  
+  createTeam: async (team) => {
+    return handleApiCall(`${API_BASE_URL}/teams`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(team)
+    });
+  },
+  
+  updateTeam: async (id, team) => {
+    return handleApiCall(`${API_BASE_URL}/teams/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(team)
+    });
+  },
+  
+  deleteTeam: async (id) => {
+    return handleApiCall(`${API_BASE_URL}/teams/${id}`, {
+      method: 'DELETE'
+    });
+  },
+
+  // User APIs
+  login: async (credentials) => {
+    return handleApiCall(`${API_BASE_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials)
+    });
+  },
+  
+  register: async (user) => {
+    return handleApiCall(`${API_BASE_URL}/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(user)
+    });
+  },
+  
+  getUsers: async () => {
+    return handleApiCall(`${API_BASE_URL}/users`);
   }
 };

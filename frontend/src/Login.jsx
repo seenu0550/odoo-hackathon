@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { api } from './utils/api';
 
 function Login() {
   const navigate = useNavigate();
@@ -7,25 +8,36 @@ function Login() {
     email: '',
     password: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
     
-    if (formData.email && formData.password) {
-      // Check if user exists in localStorage
-      const users = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-      const user = users.find(u => u.email === formData.email && u.password === formData.password);
+    try {
+      const response = await api.login(formData);
       
-      if (user) {
-        // Route based on registered role
-        if (user.role === 'technician') {
+      if (response.success) {
+        // Store user data
+        localStorage.setItem('currentUser', JSON.stringify(response.user));
+        
+        // Route based on role
+        if (response.user.role === 'manager') {
+          navigate('/manager-dashboard');
+        } else if (response.user.role === 'technician') {
           navigate('/dashboard');
         } else {
           navigate('/user-dashboard');
         }
       } else {
-        alert('Invalid email or password');
+        setError(response.error || 'Login failed');
       }
+    } catch (error) {
+      setError('Network error. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -197,15 +209,33 @@ function Login() {
           
           <button
             type="submit"
-            style={styles.button}
-            onMouseOver={(e) => Object.assign(e.target.style, styles.buttonHover)}
+            disabled={loading}
+            style={{
+              ...styles.button,
+              opacity: loading ? 0.7 : 1,
+              cursor: loading ? 'not-allowed' : 'pointer'
+            }}
+            onMouseOver={(e) => !loading && Object.assign(e.target.style, styles.buttonHover)}
             onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+              if (!loading) {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+              }
             }}
           >
-            Sign In
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
+          
+          {error && (
+            <div style={{
+              color: '#e53e3e',
+              fontSize: '14px',
+              textAlign: 'center',
+              marginTop: '10px'
+            }}>
+              {error}
+            </div>
+          )}
         </form>
         
         <div style={styles.footer}>

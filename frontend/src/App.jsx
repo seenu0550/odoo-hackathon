@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import ManagerDashboard from './pages/ManagerDashboard.jsx';
 import UserDashboard from './UserDashboard.jsx';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/manager-dashboard" element={<ManagerDashboard />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
         </Routes>
       </div>

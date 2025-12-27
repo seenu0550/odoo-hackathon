@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header.jsx';
 import RequestsTab from './components/RequestsTab.jsx';
 import EquipmentTab from './components/EquipmentTab.jsx';
 
-function UserDashboard({ user }) {
+function UserDashboard() {
   const [activeTab, setActiveTab] = useState('requests');
   const [showUserModal, setShowUserModal] = useState(false);
+  const [currentUser, setCurrentUser] = useState({ name: 'User', email: 'user@company.com', role: 'employee' });
   const [requests, setRequests] = useState([
     { id: 1, equipment: 'Printer HP-001', type: 'Corrective', status: 'New', date: '2025-01-15' },
     { id: 2, equipment: 'AC Unit-205', type: 'Corrective', status: 'In Progress', date: '2025-01-14' },
@@ -17,6 +18,22 @@ function UserDashboard({ user }) {
     { id: 2, name: 'AC Unit-205', category: 'HVAC', team: 'Facilities' },
     { id: 3, name: 'Laptop DEL-123', category: 'IT Equipment', team: 'IT Support' }
   ]);
+
+  useEffect(() => {
+    loadCurrentUser();
+  }, []);
+
+  const loadCurrentUser = () => {
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      setCurrentUser(JSON.parse(userData));
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    window.location.href = '/';
+  };
 
   const styles = {
     container: {
@@ -78,7 +95,7 @@ function UserDashboard({ user }) {
 
   return (
     <div style={styles.container}>
-      <Header user={user} onUserClick={() => setShowUserModal(true)} />
+      <Header user={currentUser} onUserClick={() => setShowUserModal(true)} />
       
       <div style={styles.mainContent}>
         <div style={styles.tabs}>
@@ -113,10 +130,10 @@ function UserDashboard({ user }) {
         <div style={styles.modal} onClick={() => setShowUserModal(false)}>
           <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <h3 style={{ margin: '0 0 20px 0', fontSize: '20px', fontWeight: '600', color: '#2d3748' }}>User Details</h3>
-            <p style={{ margin: '10px 0', fontSize: '16px', color: '#4a5568' }}>Name: {user?.name || user?.email?.split('@')[0] || 'User'}</p>
-            <p style={{ margin: '10px 0', fontSize: '16px', color: '#4a5568' }}>Role: {user?.role?.charAt(0).toUpperCase() + user?.role?.slice(1) || 'Employee'}</p>
-            <p style={{ margin: '10px 0', fontSize: '16px', color: '#4a5568' }}>Email: {user?.email || 'N/A'}</p>
-            <p style={{ margin: '10px 0', fontSize: '16px', color: '#4a5568' }}>Department: Operations</p>
+            <p style={{ margin: '10px 0', fontSize: '16px', color: '#4a5568' }}>Name: {currentUser?.name || currentUser?.email?.split('@')[0] || 'User'}</p>
+            <p style={{ margin: '10px 0', fontSize: '16px', color: '#4a5568' }}>Role: {currentUser?.role?.charAt(0).toUpperCase() + currentUser?.role?.slice(1) || 'Employee'}</p>
+            <p style={{ margin: '10px 0', fontSize: '16px', color: '#4a5568' }}>Email: {currentUser?.email || 'N/A'}</p>
+            <p style={{ margin: '10px 0', fontSize: '16px', color: '#4a5568' }}>Department: {currentUser?.department || 'Not specified'}</p>
             <button 
               onClick={() => setShowUserModal(false)}
               style={{
@@ -133,7 +150,7 @@ function UserDashboard({ user }) {
               Close
             </button>
             <button 
-              onClick={() => window.location.reload()}
+              onClick={handleLogout}
               style={{
                 marginTop: '20px',
                 padding: '10px 20px',
