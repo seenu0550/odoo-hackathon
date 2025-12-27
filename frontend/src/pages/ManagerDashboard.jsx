@@ -54,6 +54,18 @@ const ManagerDashboard = () => {
     }
   };
 
+  const handleCreateEquipment = async (equipmentData) => {
+    try {
+      console.log('Attempting to create equipment:', equipmentData);
+      const createdEquipment = await api.createEquipment(equipmentData);
+      console.log('Equipment creation response:', createdEquipment);
+      setEquipment([...equipment, createdEquipment]);
+    } catch (error) {
+      console.error('Error creating equipment:', error);
+      alert('Failed to create equipment: ' + (error.message || 'Please try again.'));
+    }
+  };
+
   const handleDeleteEquipment = async (id) => {
     try {
       await api.deleteEquipment(id);
@@ -150,9 +162,12 @@ const ManagerDashboard = () => {
       case 'technicians':
         return <TechnicianManagement buttonStyle={buttonStyle} />;
       case 'equipment':
-        return <EquipmentManagement equipment={equipment} loading={loading} onDelete={handleDeleteEquipment} buttonStyle={buttonStyle} />;
+        return <EquipmentManagement equipment={equipment} loading={loading} onDelete={handleDeleteEquipment} onAdd={handleCreateEquipment} buttonStyle={buttonStyle} />;
       case 'teams':
-        return <TeamManagement teams={teams} loading={loading} onCreateTeam={() => setShowCreateTeamModal(true)} buttonStyle={buttonStyle} />;
+        return <TeamManagement teams={teams} loading={loading} onCreateTeam={() => {
+          console.log('Setting showCreateTeamModal to true');
+          setShowCreateTeamModal(true);
+        }} buttonStyle={buttonStyle} />;
       case 'schedule':
         return <ScheduleManagement requests={requests} loading={loading} />;
       case 'calendar':
@@ -241,6 +256,7 @@ const ManagerDashboard = () => {
           newTeam={newTeam}
           setNewTeam={setNewTeam}
           onClose={() => {
+            console.log('Closing CreateTeamModal');
             setShowCreateTeamModal(false);
             setNewTeam({ name: '', description: '', members: [] });
           }}

@@ -38,23 +38,28 @@ const TechnicianManagement = ({ buttonStyle }) => {
     setShowProfileModal(true);
   };
 
-  const handleAddTechnician = async () => {
+  const handleAddTechnician = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (!newTechnician.name || !newTechnician.email || !newTechnician.password || !newTechnician.department) {
       alert('Please fill in all fields');
       return;
     }
 
     try {
+      console.log('Attempting to register technician:', newTechnician);
       const response = await api.register({
         ...newTechnician,
         role: 'technician'
       });
+      console.log('Registration response:', response);
       setNewTechnician({ name: '', email: '', password: '', department: '' });
       setShowAddForm(false);
-      await loadTechnicians(); // Reload the list
+      await loadTechnicians();
     } catch (error) {
       console.error('Error adding technician:', error);
-      alert('Failed to add technician. Please try again.');
+      alert('Failed to add technician: ' + (error.message || 'Please try again.'));
     }
   };
 
@@ -75,7 +80,7 @@ const TechnicianManagement = ({ buttonStyle }) => {
       </div>
 
       {showAddForm && (
-        <div style={{
+        <form onSubmit={handleAddTechnician} style={{
           backgroundColor: 'white',
           borderRadius: '12px',
           padding: '20px',
@@ -141,12 +146,14 @@ const TechnicianManagement = ({ buttonStyle }) => {
             </select>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button style={buttonStyle} onClick={handleAddTechnician}>
+            <button type="submit" style={buttonStyle}>
               Add Technician
             </button>
             <button 
+              type="button"
               style={{...buttonStyle, background: '#6c757d'}}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 setShowAddForm(false);
                 setNewTechnician({ name: '', email: '', password: '', department: '' });
               }}
@@ -154,7 +161,7 @@ const TechnicianManagement = ({ buttonStyle }) => {
               Cancel
             </button>
           </div>
-        </div>
+        </form>
       )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>

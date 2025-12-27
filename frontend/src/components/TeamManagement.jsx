@@ -11,7 +11,10 @@ const TeamManagement = ({ teams, loading, onCreateTeam, buttonStyle }) => {
         <h2 style={{ fontSize: '28px', fontWeight: '700', color: '#2d3748', margin: 0 }}>Team Management</h2>
         <button 
           style={{ ...buttonStyle, marginLeft: 'auto' }}
-          onClick={onCreateTeam}
+          onClick={() => {
+            console.log('Create Team button clicked!');
+            onCreateTeam();
+          }}
         >
           + Create Team
         </button>
