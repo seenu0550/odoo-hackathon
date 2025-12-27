@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Register() {
+function Register({ onRegister, onSwitchToLogin }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,7 +15,7 @@ function Register() {
       alert('Passwords do not match');
       return;
     }
-    console.log('Register attempt:', formData);
+    onRegister(formData);
   };
 
   const handleChange = (e) => {
@@ -248,7 +248,12 @@ function Register() {
         </form>
         
         <div style={styles.footer}>
-          Odoo Hackathon © 2025
+          <button 
+            onClick={onSwitchToLogin}
+            style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline' }}
+          >
+            Already have an account? Login here
+          </button>
         </div>
       </div>
     </div>

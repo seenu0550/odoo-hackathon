@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 
-function Login() {
+function Login({ onLogin, onSwitchToRegister }) {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
-    role: 'user'
+    password: ''
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Login attempt:', formData);
+    onLogin(formData);
   };
 
   const handleChange = (e) => {
@@ -178,20 +177,6 @@ function Login() {
             />
           </div>
           
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Select Role</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              style={styles.select}
-            >
-              <option value="user">👤 User</option>
-              <option value="manager">👔 Manager</option>
-              <option value="technician">🔧 Technician</option>
-            </select>
-          </div>
-          
           <button
             type="submit"
             style={styles.button}
@@ -206,7 +191,12 @@ function Login() {
         </form>
         
         <div style={styles.footer}>
-          Odoo Hackathon © 2025
+          <button 
+            onClick={onSwitchToRegister}
+            style={{ background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', textDecoration: 'underline' }}
+          >
+            Don't have an account? Register here
+          </button>
         </div>
       </div>
     </div>
